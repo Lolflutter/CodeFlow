@@ -22,19 +22,21 @@ class ChatBotViewModel extends ChangeNotifier {
       dateTime: DateTime.now().toString(),
       statusCode: 200,
     ));
-
-    notifyListeners();
+    notifyListeners(); // لعرض رسالة المستخدم فورًا
 
     try {
       final response = await chatBotUseCase.sendMessage(message, model);
       messages.add(response);
+      notifyListeners(); // عشان تظهر رسالة الـ AI فورًا بعد ما توصل
     } catch (e) {
       errorMessage = e.toString();
+      notifyListeners(); // عشان يظهر الخطأ لو فيه
     } finally {
       isLoading = false;
-      notifyListeners();
+      notifyListeners(); // عشان يشيل الـ loader
     }
   }
+
 
   Future<void> getModels() async {
     isLoading = true;

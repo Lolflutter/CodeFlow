@@ -47,6 +47,7 @@ dependencies:
   smooth_page_indicator:
   flutter_markdown:
   lottie:
+  web_socket_channel:
   flutter_localizations:
       sdk: flutter
   intl: any

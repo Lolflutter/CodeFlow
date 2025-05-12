@@ -56,7 +56,6 @@ class FileViewModel extends ChangeNotifier {
     if (file != null) {
       selectedFile = file;
       readFile =true;
-      print('✅ File loaded: ${file.fileName} (ID: ${file.fileId})');
       notifyListeners();
     } else {
       readFile =false;
@@ -68,15 +67,13 @@ class FileViewModel extends ChangeNotifier {
 
 
   Future<void> createFile(String fileName, String fileContent) async {
-    final newFile = await _execute(() => fileUseCase.createFile(token!, fileName, fileContent));
+    final newFile = await _execute(() =>
+        fileUseCase.createFile(token!, fileName, fileContent));
 
     if (newFile != null) {
       await readSingleFile(newFile.fileId);
-
       files.add(newFile);
       fileCreated = true;
-
-      notifyListeners();
     } else {
       fileCreated = false;
     }
@@ -85,7 +82,7 @@ class FileViewModel extends ChangeNotifier {
 
 
 
-  Future<void> updateFile(int fileId, {String? newFileName, String? newFileContent}) async {
+    Future<void> updateFile(int fileId, {String? newFileName, String? newFileContent}) async {
     final updatedFile = await _execute(() => fileUseCase.updateFile(
         token!, fileId, newFileName: newFileName, newFileContent: newFileContent));
 
@@ -101,7 +98,6 @@ class FileViewModel extends ChangeNotifier {
           fileContent: newFileContent ?? selectedFile!.fileContent,
         );
       }
-      print("✅ File Loaded: ${selectedFile?.fileName}, ID: ${selectedFile?.fileId}");      notifyListeners();
     }
   }
 
@@ -159,7 +155,6 @@ class FileViewModel extends ChangeNotifier {
 
     if (result != null) {
       updatedSharedFile = result;
-      print("✅ Shared File Updated: ${result.fileName}");
       notifyListeners();
     }
   }

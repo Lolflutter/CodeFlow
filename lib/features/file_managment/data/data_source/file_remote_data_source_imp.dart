@@ -15,9 +15,6 @@ class FileRemoteDataSourceImpl implements FileRemoteDataSource {
   @override
   Future<List<FileModel>> readAllFiles(String token) async {
 
-    print("Headers being sent: ${networkServices.dio.options.headers}");
-    print("Final Request URL: ${networkServices.dio.options.baseUrl}file/all");
-
 
     final response = await networkServices.dio.get(
       'file/all',
@@ -43,8 +40,6 @@ class FileRemoteDataSourceImpl implements FileRemoteDataSource {
 
   @override
   Future<FileModel> updateFile(String token, int fileId, {String? newFileName, String? newFileContent}) async {
-    // تأكيد أن fileId ليس null
-    assert(fileId != null, "❌ خطأ: fileId لا يمكن أن يكون null");
 
     final Map<String, dynamic> requestData = {
       "fileId": fileId,
@@ -52,7 +47,6 @@ class FileRemoteDataSourceImpl implements FileRemoteDataSource {
       if (newFileContent != null) "newFileContent": newFileContent,
     };
 
-    print("📡 Sending update request: $requestData");
 
     try {
       final response = await networkServices.dio.patch(
@@ -61,12 +55,10 @@ class FileRemoteDataSourceImpl implements FileRemoteDataSource {
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
-      print("✅ Response Data: ${response.data}");
 
       return FileModel.fromJson(response.data);
     } catch (e) {
-      print("❌ Update Error: $e");
-      rethrow; // إعادة رمي الخطأ لمعرفة السبب الحقيقي
+      rethrow;
     }
   }
 

@@ -99,9 +99,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             .then((_) {
                           if (viewModel.isSuccess) {
                             viewModel.resetStatus();
-                            Navigator.pushReplacementNamed(
+                            Navigator.pushNamedAndRemoveUntil(
                               context,
                               AppRoutesName.mainLayout,
+                                  (route) => false, // this removes all previous routes
                             );
                           }
                         });

@@ -16,6 +16,8 @@ import 'package:graduation_project/features/main_layout/chat_bot_tab/data/repo/c
 import 'package:graduation_project/features/main_layout/chat_bot_tab/domain/use_cases/chat_bot_use_case.dart';
 import 'package:graduation_project/features/main_layout/chat_bot_tab/presentation/manager/chat_bot_view_model.dart';
 import 'package:graduation_project/features/main_layout/home/manager/home_tab_controller.dart';
+import 'package:graduation_project/features/main_layout/profile_tab/data/data_source/profile_data_source_imp.dart';
+import 'package:graduation_project/features/main_layout/profile_tab/presentation/manager/user_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'features/main_layout/compiler_tab/data/data_source/compile_data_source_imp.dart';
@@ -83,6 +85,7 @@ class MyApp extends StatelessWidget {
       chatBotDataSource: chatBotDataSource,
     );
     final chatBotUseCase = ChatBotUseCase(chatBotRepo);
+    final userDataSource = UserRemoteDataSourceImpl(networkServices);
 
     return MultiProvider(
       providers: [
@@ -110,7 +113,8 @@ class MyApp extends StatelessWidget {
             create:
                 (_) => ChatBotViewModel(chatBotUseCase: chatBotUseCase )),
         ChangeNotifierProvider(create: (context) => HomeTabController(),),
-        ChangeNotifierProvider(create: (context) => LanguageProvider() ,)
+        ChangeNotifierProvider(create: (context) => LanguageProvider() ,),
+        ChangeNotifierProvider(create: (context) => UserViewModel(userRemoteDataSource: userDataSource),)
       ],
       child: Consumer<LanguageProvider>(
         builder: (context, value, child) =>

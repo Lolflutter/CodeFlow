@@ -67,39 +67,58 @@ class _CompilerScreenState extends State<CompilerScreen> {
     });
   }
 
+  // Future<void> _executeCode(BuildContext context) async {
+  //   final navigatorKey = Navigator.of(context);
+  //   FocusManager.instance.primaryFocus?.unfocus();
+  //
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (_) => const Center(child: CircularProgressIndicator()),
+  //   );
+  //
+  //   try {
+  //     final compiler = Provider.of<CompileViewModel>(context, listen: false);
+  //     await compiler.compileCode(selectedLanguage!, _codeController.text);
+  //
+  //     navigatorKey.pop();
+  //
+  //     if (compiler.compileResult != null) {
+  //       await navigatorKey.pushNamed(
+  //         AppRoutesName.output,
+  //         arguments: compiler.compileResult,
+  //       );
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('Compilation returned no output')),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     navigatorKey.pop();
+  //     ScaffoldMessenger.of(
+  //       context,
+  //     ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+  //   }
+  // }
+
   Future<void> _executeCode(BuildContext context) async {
-    final navigatorKey = Navigator.of(context);
-    FocusManager.instance.primaryFocus?.unfocus();
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator()),
-    );
-
-    try {
-      final compiler = Provider.of<CompileViewModel>(context, listen: false);
-      await compiler.compileCode(selectedLanguage!, _codeController.text);
-
-      navigatorKey.pop();
-
-      if (compiler.compileResult != null) {
-        await navigatorKey.pushNamed(
-          AppRoutesName.output,
-          arguments: compiler.compileResult,
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Compilation returned no output')),
-        );
-      }
-    } catch (e) {
-      navigatorKey.pop();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+    print("Selected Language: $selectedLanguage");
+    print("Code to run: ${_codeController.text}");
+    if (selectedLanguage == null || _codeController.text.trim().isEmpty) {
+      print("❌ Either language or code is missing");
+      return;
     }
+    FocusManager.instance.primaryFocus?.unfocus();
+    final compiler = Provider.of<CompileViewModel>(context, listen: false);
+    compiler.connectToCompiler(selectedLanguage!, _codeController.text);
+
+
+    Navigator.of(context).pushNamed(AppRoutesName.output);
   }
+  String shortenString(String input) {
+    return input.length > 6 ? input.substring(0, 6) + '...' : input;
+  }
+
 
   @override
   void dispose() {
@@ -138,10 +157,12 @@ class _CompilerScreenState extends State<CompilerScreen> {
                   ),
                   Spacer(),
                   Text(
-                    fileViewModel.selectedFile?.fileName ??
-                        'No file selected', // إذا كان fileName فارغًا، يعرض "No file selected"
+                    shortenString(fileViewModel.selectedFile!.fileName )??
+                        'No file selected',
                     style: TextStyle(color: AppColors.white, fontSize: 16),
                     overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+
                   ),
                   SizedBox(width: 10),
                   DropdownButton<String>(
@@ -191,10 +212,11 @@ class _CompilerScreenState extends State<CompilerScreen> {
                       wrap: true,
                       background: AppColors.gray,
                       textStyle: const TextStyle(fontSize: 14),
-                      gutterStyle: GutterStyle(
+                      gutterStyle: const GutterStyle(
                         textStyle: TextStyle(color: Colors.white),
                       ),
                     ),
+
                   ),
                 ),
                 Container(

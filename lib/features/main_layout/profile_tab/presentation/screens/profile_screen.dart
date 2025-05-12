@@ -6,12 +6,27 @@ import 'package:graduation_project/features/main_layout/profile_tab/presentation
 import 'package:provider/provider.dart';
 import '../../../../../core/routes/app_routes_name.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../manager/user_view_model.dart';
 
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   final void Function({int subTabIndex})? navigateToHomeTab;
 
    const ProfileScreen({super.key,  this.navigateToHomeTab});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      Provider.of<UserViewModel>(context, listen: false).fetchUserInfo();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +46,9 @@ class ProfileScreen extends StatelessWidget {
         centerTitle: true,
       ),
       backgroundColor: AppColors.gray,
-      body: Consumer<AuthViewModel>(
+      body: Consumer2<AuthViewModel,UserViewModel>(
         builder:
-            (context, authVm, child) => Padding(
+            (context, authVm,userVm ,child) => Padding(
               padding: const EdgeInsets.all(15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -50,8 +65,12 @@ class ProfileScreen extends StatelessWidget {
                   SizedBox(height: size.height * 0.03),
 
                   Text(
-                    '${local.hi},${authVm.usernameController.text}',
+                    '${local.hi},${userVm.usernameController.text}',
                     style: TextStyle(color: AppColors.white, fontSize: 20),
+                  ),
+                  Text(
+                    userVm.emailController.text,
+                    style: TextStyle(color: AppColors.white, fontSize:11 ),
                   ),
                   SizedBox(height: size.height * 0.03),
 
@@ -67,7 +86,7 @@ class ProfileScreen extends StatelessWidget {
                   CustomProfileContainers(
                     text: local.myProjects,
                     onTap:() {
-                      navigateToHomeTab!(subTabIndex: 1);
+                      widget.navigateToHomeTab!(subTabIndex: 1);
                     },
                     icon:Icon(Icons.file_copy, color: AppColors.white,size: 19,) ,
                   ),
@@ -75,16 +94,12 @@ class ProfileScreen extends StatelessWidget {
                   CustomProfileContainers(
                     text: local.importLink,
                     onTap:() {
-                      navigateToHomeTab!(subTabIndex: 3);
+                      widget.navigateToHomeTab!(subTabIndex: 3);
                     },
                     icon:Icon(Icons.link_rounded, color: AppColors.white,size: 19,) ,
                   ),
                   SizedBox(height: 17,),
-                  CustomProfileContainers(
-                    text: 'About Us',
-                    onTap:() {},
-                    icon:Icon(Icons.help, color: AppColors.white,size: 19,) ,
-                  ),
+
                   Spacer(),
                   CustomButton(
                     text: local.logout,

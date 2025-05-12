@@ -274,6 +274,7 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
           },
           controller: fileNameController,
           decoration: InputDecoration(hintText: local.fileName,hintStyle:TextStyle(color:AppColors.white ) ),
+          style:TextStyle(color: AppColors.white) ,
 
         ),
         actions: [
