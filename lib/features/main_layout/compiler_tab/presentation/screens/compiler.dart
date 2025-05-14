@@ -137,7 +137,6 @@ class _CompilerScreenState extends State<CompilerScreen> {
           return Scaffold(
             appBar: AppBar(
               backgroundColor: AppColors.gray,
-
               title: Row(
                 children: [
                   IconButton(
@@ -164,7 +163,7 @@ class _CompilerScreenState extends State<CompilerScreen> {
                     maxLines: 1,
 
                   ),
-                  SizedBox(width: 10),
+                  Spacer(),
                   DropdownButton<String>(
                     hint: const Text(
                       '+ Select Language',

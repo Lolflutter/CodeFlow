@@ -52,6 +52,7 @@ class CompileViewModel extends ChangeNotifier {
   /// ✅ NEW WebSocket method
   void connectToCompiler(String language, String code) {
     _output.clear();
+    _output.write("🛠️ Compiling...\n"); // هنا بنعرض لودر مبدأي
     _isRunning = true;
     notifyListeners();
 
@@ -62,16 +63,19 @@ class CompileViewModel extends ChangeNotifier {
       "language": language,
       "codeToRun": code,
     });
+
     print("🚀 Sending this to WebSocket:\n$request");
     _channel!.sink.add(request);
-
     print('Connected to WebSocket');
-
 
     _channel!.stream.listen(
           (message) {
-            print('Received: $message');
-            _output.write(message + '\n');
+        print('Received: $message');
+        // أول رسالة حقيقية هتستبدل "Compiling..." بالإخراج الفعلي
+        if (_output.toString().contains("🛠️ Compiling...")) {
+          _output.clear(); // نحذف المؤقت
+        }
+        _output.write(message + '\n');
         notifyListeners();
       },
       onDone: () {
@@ -79,12 +83,13 @@ class CompileViewModel extends ChangeNotifier {
         notifyListeners();
       },
       onError: (error) {
-        _output.write("Error: $error\n");
+        _output.write("❌ Error: $error\n");
         _isRunning = false;
         notifyListeners();
       },
     );
   }
+
   void sendCommandToCompiler(String input) {
     if (_channel == null || input.trim().isEmpty) return;
 

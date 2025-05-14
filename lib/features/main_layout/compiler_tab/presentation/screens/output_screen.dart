@@ -49,21 +49,21 @@ class _OutputScreenState extends State<OutputScreen> {
       textDirection: TextDirection.ltr,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: AppColors.black,
-          iconTheme: const IconThemeData(color: AppColors.white),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.stop_circle, color: Colors.red),
-              onPressed: () {
-                Provider.of<CompileViewModel>(
-                  context,
-                  listen: false,
-                ).closeConnection();
-                Navigator.pop(context);
-              },
-            ),
-          ],
+        backgroundColor: AppColors.black,
+        iconTheme: const IconThemeData(color: AppColors.white),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Provider.of<CompileViewModel>(
+              context,
+              listen: false,
+            ).closeConnection();
+
+            Navigator.pop(context);
+          },
         ),
+      ),
+
         backgroundColor: AppColors.black,
         body: Consumer<CompileViewModel>(
           builder: (context, compiler, _) {
@@ -130,7 +130,7 @@ class _OutputScreenState extends State<OutputScreen> {
                             controller: _inputController,
                             style: const TextStyle(color: Colors.white),
                             decoration: const InputDecoration(
-                              hintText: 'Enter input...',
+                              hintText: 'pass input...',
                               hintStyle: TextStyle(color: Colors.white54),
                               border: OutlineInputBorder(
                               ),
